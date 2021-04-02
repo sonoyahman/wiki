@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock header %}
+
+{% block content %}
+<form method="POST">{% csrf_token %}
+  <p>検索したい人物を入力してください。人物に関連するwikiリンクをcsvで出力します。</p>
+  <p>※できるだけ、フルネームで入力してください。</p>  
+  <input type="search" name="search" placeholder="キーワードを入力">
+  <input type="submit" name="submit" value="検索">
+  <p>{{message}}</p>
+</form>
+
+{{table|safe}}
+
+{% endblock content %}
