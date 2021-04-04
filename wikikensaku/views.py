@@ -6,6 +6,9 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re
 import urllib.parse
+import os
+import datetime
+import time
 
 # Create your views here.
 #人の場合
@@ -51,11 +54,6 @@ def link_shutoku(soup,tsuika_taisho):
     #shutoku_list.to_csv(zinbutu.iloc[0,0]+".csv", encoding='utf_8_sig')
     return shutoku_list
 
-
-def kensakufunc(request):
-    responseobject = HttpResponse('<h1>hello world</h1>')
-    return responseobject
-
 def mainkensakufunc(request):
     print("プログラム呼び出し")
     search=request.POST.get("search")
@@ -63,7 +61,7 @@ def mainkensakufunc(request):
     if search != None:
         print("検索開始")
         
-        wiki_url ="https://ja.wikipedia.org/wiki/"
+        #wiki_url ="https://ja.wikipedia.org/wiki/"
         search_url ="https://ja.wikipedia.org/wiki/" + search 
         
         html = requests.get(search_url)     
@@ -75,9 +73,13 @@ def mainkensakufunc(request):
             seed_link=link_shutoku(soup,tsuika_taisho)
             print(seed_link)
             result_table=seed_link.to_html(justify="left",render_links=True)
-            csv_table = seed_link.to_csv()
+            #print(os.getcwd())
+            dt_now = str(time.time())
+            file_name = tsuika_taisho+dt_now+".csv"
+            file_address = "media/"+file_name
+            csv_table = seed_link.to_csv(file_address, encoding='shift_jis')
             
-            output = render(request,"main.html",{"table":result_table,"csv":csv_table})
+            output = render(request,"main_result.html",{"table":result_table,"fileaddress":"../"+file_address,"filename":file_name})
             return output
         
         else:
